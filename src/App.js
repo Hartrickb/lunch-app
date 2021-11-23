@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import './App.css';
 // import { TextField, Button, Grid } from '@mui/material';
 import { Button, ChakraProvider, Container, Flex, Grid, GridItem, Heading, Input } from '@chakra-ui/react';
@@ -5,6 +6,15 @@ import { AwesomeButton } from 'react-awesome-button';
 import "react-awesome-button/dist/styles.css";
 
 function App() {
+  const [zipCode, setZipCode] = useState('');
+
+  const pickForMe = (event) => {
+    event.preventDefault();
+    
+    console.log('hey');
+    alert(zipCode);
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -15,13 +25,16 @@ function App() {
                   <Heading textColor='black'>Lunch Finder</Heading>
                 </GridItem>
                 <GridItem colSpan={2}>
-                  <Input backgroundColor='white' textColor='black' placeholder="Zip Code" size='md'/>
+                  <Input backgroundColor={isValidZip(zipCode) || zipCode === '' ? 'white': 'red.100'} textColor='black' placeholder="Zip Code" size='md'onChange={(e) => setZipCode(e.target.value)} />
                 </GridItem>
                 <GridItem colSpan={1}>
-                  <Button colorShceme='blue' variant='outline' backgroundColor='gray.100' textColor='black' width='full'>Let me choose</Button>
+                  <Button onClick={pickForMe} isDisabled={!isValidZip(zipCode)} colorShceme='blue' variant='outline' backgroundColor='gray.100' textColor='black' width='full'>Let me choose</Button>
                 </GridItem>
                 <GridItem colSpan={1}>
-                  <Button colorScheme='blue' width='full'>Pick for me</Button>
+                  <Button isDisabled={!isValidZip(zipCode)} colorScheme='blue' width='full'>Pick for me</Button>
+                </GridItem>
+                <GridItem colSpan={2}>
+                  <p>{zipCode}</p>
                 </GridItem>
               </Grid>
           </Container>
@@ -43,5 +56,10 @@ function App() {
     </div>
   );
 }
+
+function isValidZip(zipCode) {
+  return /^\d{5}(-\d{4})?$/.test(zipCode);
+}
+
 
 export default App;
