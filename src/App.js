@@ -1,18 +1,40 @@
 import { useState, useEffect } from 'react';
+// import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
 // import { TextField, Button, Grid } from '@mui/material';
 import { Button, ChakraProvider, Container, Flex, Grid, GridItem, Heading, Input } from '@chakra-ui/react';
 import { AwesomeButton } from 'react-awesome-button';
 import "react-awesome-button/dist/styles.css";
 
+import PickButton from './components/Button';
+import Places from './components/Places';
+
 function App() {
   const [zipCode, setZipCode] = useState('');
+  const [places, setPlaces] = useState([]);
 
-  const pickForMe = (event) => {
-    event.preventDefault();
+  // useEffect(() => {
+  //   const getPlace = async () => {
+  //     const placeFromServer = await pickForMe();
+  //     setPlaces(placeFromServer);
+  //   }
+  //   getPlace();
+  // }, [])
+
+  const pickForMe = async () => {
+    const response = await fetch('https://us-central1-lunchapp-330918.cloudfunctions.net/zipCode/pickForMe', {
+      method: 'POST',
+      'headers': {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "zipCode": 27518
+      })})
+    const data = await response.json();
     
     console.log('hey');
     alert(zipCode);
+    return data;
   }
 
   return (
@@ -28,7 +50,8 @@ function App() {
                   <Input backgroundColor={isValidZip(zipCode) || zipCode === '' ? 'white': 'red.100'} textColor='black' placeholder="Zip Code" size='md'onChange={(e) => setZipCode(e.target.value)} />
                 </GridItem>
                 <GridItem colSpan={1}>
-                  <Button onClick={pickForMe} isDisabled={!isValidZip(zipCode)} colorShceme='blue' variant='outline' backgroundColor='gray.100' textColor='black' width='full'>Let me choose</Button>
+                  <Button onClick={() => console.log('hey pup')} isDisabled={!isValidZip(zipCode)} colorShceme='blue' variant='outline' backgroundColor='gray.100' textColor='black' width='full'>Pick For Me</Button>
+                  {/* <PickButton text='Let Me Choose'/> */}
                 </GridItem>
                 <GridItem colSpan={1}>
                   <Button isDisabled={!isValidZip(zipCode)} colorScheme='blue' width='full'>Pick for me</Button>
@@ -36,6 +59,7 @@ function App() {
                 <GridItem colSpan={2}>
                   <p>{zipCode}</p>
                 </GridItem>
+                <Places />
               </Grid>
           </Container>
         </ChakraProvider>
