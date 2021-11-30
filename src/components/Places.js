@@ -5,11 +5,7 @@ const Places = ({ places, onDirections }) => {
   return (
     <>
       {places.map((place) => (
-        <Place
-          key={place.scores.total}
-          place={place}
-          onDirections={onDirections}
-        />
+        <Place key={place.scores.total} place={place} onDirections={onDirections} />
       ))}
     </>
   );

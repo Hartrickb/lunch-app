@@ -10,12 +10,12 @@ const PickButton = ({ text }) => {
     <div>
       <Button
         onClick={onClick}
-        className="btn"
-        colorShceme="blue"
-        variant="outline"
-        backgroundColor="gray.100"
-        textColor="black"
-        width="full"
+        className='btn'
+        colorShceme='blue'
+        variant='outline'
+        backgroundColor='gray.100'
+        textColor='black'
+        width='full'
       >
         {text}
       </Button>

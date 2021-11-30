@@ -6,31 +6,28 @@ const Place = ({ place, onDirections }) => {
   return (
     <GridItem
       colSpan={2}
-      background="blackAlpha.200"
-      borderRadius="md"
-      border="1px"
-      borderColor="gray.200"
+      background='blackAlpha.200'
+      borderRadius='md'
+      border='1px'
+      borderColor='gray.200'
     >
-      <Grid templateRows="repeat(2, 1fr)" templateColumns="repeat(5, 1fr)">
+      <Grid templateRows='repeat(2, 1fr)' templateColumns='repeat(5, 1fr)'>
         <GridItem colSpan={4}>
-          <Text fontSize="lg" color="gray">
+          <Text fontSize='lg' color='gray'>
             {place.name}
           </Text>
         </GridItem>
         <GridItem
           colSpan={1}
           rowSpan={2}
-          alignItems="center"
-          display="flex"
-          justifyContent="center"
+          alignItems='center'
+          display='flex'
+          justifyContent='center'
         >
-          <FiMapPin
-            color="gray"
-            onClick={() => onDirections(place.location.address)}
-          />
+          <FiMapPin color='gray' onClick={() => onDirections(place.location.address)} />
         </GridItem>
         <GridItem colSpan={4}>
-          <Text fontSize="lg" color="gray">
+          <Text fontSize='lg' color='gray'>
             {place.location.address}
           </Text>
         </GridItem>
