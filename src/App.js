@@ -2,14 +2,15 @@ import { useState } from 'react';
 // import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
 // import { TextField, Button, Grid } from '@mui/material';
+import { FiMapPin } from 'react-icons/fi';
 import {
   Button,
   ChakraProvider,
   Container,
-  Flex,
   Grid,
   GridItem,
   Heading,
+  IconButton,
   Input,
   Spinner,
 } from '@chakra-ui/react';
@@ -20,9 +21,10 @@ import PickButton from './components/Button';
 import Places from './components/Places';
 
 const App = function () {
-  const [zipCode, setZipCode] = useState('');
+  const [location, setLocation] = useState('');
   const [places, setPlaces] = useState([]);
   const [waiting, setWaiting] = useState(false);
+  const [userLocation, setUserLocation] = useState({});
 
   // useEffect(() => {
   //   const getPlace = async () => {
@@ -31,6 +33,16 @@ const App = function () {
   //   }
   //   getPlace();
   // }, [])
+  const getLocation = async () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      console.log(position);
+      setUserLocation({
+        lat: position.coords.latitude,
+        long: position.coords.longitude,
+      });
+      setLocation(`${position.coords.latitude}, ${position.coords.longitude}`);
+    });
+  };
 
   const letMeChooseSetPlaces = async () => {
     setPlaces([]);
@@ -43,12 +55,10 @@ const App = function () {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          zipCode,
+          location,
         }),
       },
     );
-
-    console.log('hey');
 
     const data = await response.json();
 
@@ -68,7 +78,7 @@ const App = function () {
           'Access-Control-Allow-Origin': '*',
         },
         body: JSON.stringify({
-          zipCode,
+          location,
         }),
       },
     );
@@ -95,38 +105,45 @@ const App = function () {
             <Grid
               width='full'
               templateRows='repeat(3, 1fr)'
-              templateColumns='repeat(2, 1fr)'
+              templateColumns='repeat(6, 1fr)'
               gap={4}
             >
-              <GridItem colSpan={2}>
+              <GridItem colSpan={6}>
                 <Heading textColor='black'>Lunch Finder</Heading>
               </GridItem>
-              <GridItem colSpan={2}>
+              <GridItem colSpan={5}>
                 <Input
-                  backgroundColor={isValidZip(zipCode) || zipCode === '' ? 'white' : 'red.100'}
+                  backgroundColor={isValidZip(location) || location === '' ? 'white' : 'red.100'}
                   textColor='black'
                   placeholder='Zip Code'
                   size='md'
-                  onChange={(event) => setZipCode(event.target.value)}
+                  onChange={(event) => setLocation(event.target.value)}
+                  value={location}
                 />
               </GridItem>
               <GridItem colSpan={1}>
+                <IconButton
+                  icon={<FiMapPin />}
+                  colorScheme='blue'
+                  onClick={getLocation}
+                  isDisabled={waiting}
+                />
+              </GridItem>
+              <GridItem colSpan={3}>
                 <Button
                   onClick={letMeChooseSetPlaces}
-                  isDisabled={!isValidZip(zipCode) || waiting}
-                  colorShceme='blue'
-                  variant='outline'
-                  backgroundColor='gray.100'
-                  textColor='black'
+                  isDisabled={!isValidZip(location) || waiting}
+                  colorScheme='teal'
+                  // variant='outline'
                   width='full'
                 >
                   Let Me Choose
                 </Button>
               </GridItem>
-              <GridItem colSpan={1}>
+              <GridItem colSpan={3}>
                 <Button
                   onClick={async () => await pickForMe()}
-                  isDisabled={!isValidZip(zipCode) || waiting}
+                  isDisabled={!isValidZip(location) || waiting}
                   colorScheme='blue'
                   width='full'
                 >
@@ -134,10 +151,10 @@ const App = function () {
                 </Button>
               </GridItem>
               {/* <GridItem colSpan={2}>
-                  <p>{zipCode}</p>
+                  <p>{location}</p>
                 </GridItem> */}
               {waiting ? (
-                <GridItem colSpan={2}>
+                <GridItem colSpan={6}>
                   <Spinner
                     thickness='4px'
                     speed='.7s'
@@ -169,8 +186,13 @@ const App = function () {
   );
 };
 
-function isValidZip(zipCode) {
-  return /^\d{5}(-\d{4})?$/.test(zipCode);
+function isValidZip(location) {
+  return (
+    /^\d{5}(-\d{4})?$/.test(location) ||
+    /^[+-]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s[+-]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(
+      location,
+    )
+  );
 }
 
 export default App;

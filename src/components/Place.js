@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import { Grid, GridItem, Text } from '@chakra-ui/react';
-import { FiMapPin } from 'react-icons/fi';
+import { FiCornerUpRight } from 'react-icons/fi';
 
 const Place = ({ place, onDirections }) => {
   return (
     <GridItem
-      colSpan={2}
+      colSpan={6}
       background='blackAlpha.200'
       borderRadius='md'
       border='1px'
@@ -24,7 +24,7 @@ const Place = ({ place, onDirections }) => {
           display='flex'
           justifyContent='center'
         >
-          <FiMapPin color='gray' onClick={() => onDirections(place.location.address)} />
+          <FiCornerUpRight color='gray' onClick={() => onDirections(place.location.address)} />
         </GridItem>
         <GridItem colSpan={4}>
           <Text fontSize='lg' color='gray'>
