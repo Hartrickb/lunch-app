@@ -4,6 +4,8 @@ import './App.css';
 // import { TextField, Button, Grid } from '@mui/material';
 import { FiMapPin } from 'react-icons/fi';
 import {
+  Alert,
+  AlertIcon,
   Button,
   ChakraProvider,
   Container,
@@ -25,6 +27,8 @@ const App = function () {
   const [places, setPlaces] = useState([]);
   const [waiting, setWaiting] = useState(false);
   const [userLocation, setUserLocation] = useState({});
+  const [geoError, setGeoError] = useState(false);
+  const [geoErrorMessage, setGeoErrorMessage] = useState('');
 
   // useEffect(() => {
   //   const getPlace = async () => {
@@ -34,21 +38,29 @@ const App = function () {
   //   getPlace();
   // }, [])
   const getLocation = async () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      console.log(position);
-      setUserLocation({
-        lat: position.coords.latitude,
-        long: position.coords.longitude,
-      });
-      setLocation(`${position.coords.latitude}, ${position.coords.longitude}`);
-    });
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log(position);
+        setUserLocation({
+          lat: position.coords.latitude,
+          long: position.coords.longitude,
+        });
+        setLocation(`${position.coords.latitude}, ${position.coords.longitude}`);
+      },
+      (error) => {
+        setGeoError(true);
+        setGeoErrorMessage(error.message);
+      },
+    );
   };
 
   const letMeChooseSetPlaces = async () => {
+    setGeoError(false);
     setPlaces([]);
     setWaiting(true);
     const response = await fetch(
       'https://us-central1-lunchapp-330918.cloudfunctions.net/zipCode/letMeChoose',
+      // 'http://localhost:3001/letMeChoose',
       {
         method: 'POST',
         headers: {
@@ -67,10 +79,12 @@ const App = function () {
   };
 
   const pickForMe = async () => {
+    setGeoError(false);
     setPlaces([]);
     setWaiting(true);
     const response = await fetch(
       'https://us-central1-lunchapp-330918.cloudfunctions.net/zipCode/pickForMe',
+      // 'http://localhost:3001/pickForMe',
       {
         method: 'POST',
         headers: {
@@ -102,22 +116,27 @@ const App = function () {
       <header className='App-header'>
         <ChakraProvider>
           <Container maxWidth='lg' marginBottom='auto' paddingTop='20px'>
-            <Grid
-              width='full'
-              templateRows='repeat(3, 1fr)'
-              templateColumns='repeat(6, 1fr)'
-              gap={4}
-            >
+            <Grid width='full' autoRows='auto' templateColumns='repeat(6, 1fr)' gap={4}>
               <GridItem colSpan={6}>
                 <Heading textColor='black'>Lunch Finder</Heading>
               </GridItem>
+              {geoError ? (
+                <GridItem colSpan={6}>
+                  <Alert status='error' textColor='black' fontSize='md' borderRadius='md'>
+                    <AlertIcon /> {geoErrorMessage}
+                  </Alert>
+                </GridItem>
+              ) : undefined}
               <GridItem colSpan={5}>
                 <Input
                   backgroundColor={isValidZip(location) || location === '' ? 'white' : 'red.100'}
                   textColor='black'
                   placeholder='Zip Code'
                   size='md'
-                  onChange={(event) => setLocation(event.target.value)}
+                  onChange={(event) => {
+                    setLocation(event.target.value);
+                    setGeoError(false);
+                  }}
                   value={location}
                 />
               </GridItem>

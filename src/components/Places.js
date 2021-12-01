@@ -13,7 +13,7 @@ const Places = ({ places, onDirections }) => {
 
 Places.propTypes = {
   places: PropTypes.array.isRequired,
-  onDirections: PropTypes.string.isRequired,
+  onDirections: PropTypes.func.isRequired,
 };
 
 export default Places;

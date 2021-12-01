@@ -11,7 +11,7 @@ const Place = ({ place, onDirections }) => {
       border='1px'
       borderColor='gray.200'
     >
-      <Grid templateRows='repeat(2, 1fr)' templateColumns='repeat(5, 1fr)'>
+      <Grid autoRows='auto' templateColumns='repeat(5, 1fr)'>
         <GridItem colSpan={4}>
           <Text fontSize='lg' color='gray'>
             {place.name}
@@ -38,7 +38,7 @@ const Place = ({ place, onDirections }) => {
 
 Place.propTypes = {
   place: PropTypes.object.isRequired,
-  onDirections: PropTypes.string.isRequired,
+  onDirections: PropTypes.func.isRequired,
 };
 
 export default Place;
