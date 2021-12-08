@@ -1,7 +1,6 @@
 import { useState } from 'react';
 // import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
-// import { TextField, Button, Grid } from '@mui/material';
 import { FiMapPin } from 'react-icons/fi';
 import {
   Alert,
@@ -16,10 +15,7 @@ import {
   Input,
   Spinner,
 } from '@chakra-ui/react';
-import { AwesomeButton } from 'react-awesome-button';
-import 'react-awesome-button/dist/styles.css';
 
-import PickButton from './components/Button';
 import Places from './components/Places';
 
 const App = function () {
@@ -30,17 +26,9 @@ const App = function () {
   const [geoError, setGeoError] = useState(false);
   const [geoErrorMessage, setGeoErrorMessage] = useState('');
 
-  // useEffect(() => {
-  //   const getPlace = async () => {
-  //     const placeFromServer = await pickForMe();
-  //     setPlaces(placeFromServer);
-  //   }
-  //   getPlace();
-  // }, [])
   const getLocation = async () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log(position);
         setUserLocation({
           lat: position.coords.latitude,
           long: position.coords.longitude,
@@ -103,8 +91,8 @@ const App = function () {
   };
 
   const getDirections = async (address) => {
-    console.log('address', address);
-    // console.log(
+    // Google Directions
+    // window.open(
     //   `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`,
     // );
     window.open(`http://maps.apple.com/?daddr=${encodeURIComponent(address)}`);
@@ -153,7 +141,6 @@ const App = function () {
                   onClick={letMeChooseSetPlaces}
                   isDisabled={!isValidZip(location) || waiting}
                   colorScheme='teal'
-                  // variant='outline'
                   width='full'
                 >
                   Let Me Choose
@@ -169,9 +156,6 @@ const App = function () {
                   Pick for me
                 </Button>
               </GridItem>
-              {/* <GridItem colSpan={2}>
-                  <p>{location}</p>
-                </GridItem> */}
               {waiting ? (
                 <GridItem colSpan={6}>
                   <Spinner
@@ -187,24 +171,12 @@ const App = function () {
             </Grid>
           </Container>
         </ChakraProvider>
-        {/* <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField id="zip-code" label="Zip Code" variant="outlined" />
-          </Grid>
-          <Grid container spacing={12} justifyContent='center'>
-            <Grid item xs={4}>
-              <AwesomeButton type="primary">Pick for me</AwesomeButton>
-            </Grid>
-            <Grid item xs={4}>
-              <AwesomeButton type="instagram">Let me choose</AwesomeButton>
-            </Grid>
-          </Grid>
-        </Grid> */}
       </header>
     </div>
   );
 };
 
+// Tests zipcode or Lat, Long
 function isValidZip(location) {
   return (
     /^\d{5}(-\d{4})?$/.test(location) ||
